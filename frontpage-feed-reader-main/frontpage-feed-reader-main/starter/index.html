@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Frontpage - RSS Feed Aggregator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="tailwind.css">
+</head>
+<body class="bg-bg-primary text-text-primary font-sans text-base h-full m-0 p-0 flex flex-col overflow-hidden antialiased">
+
+  <!-- Top Navbar -->
+  <header class="h-14 border-b border-border px-4 flex items-center justify-between bg-surface shrink-0 z-20">
+    <div class="flex items-center gap-8">
+      <div class="flex items-center gap-2 font-bold text-lg select-none tracking-tight text-text-primary">
+        <div class="w-6 h-6 bg-accent rounded-md flex items-center justify-center text-white text-xs font-bold">F</div>
+        <span>Frontpage</span>
+      </div>
+      
+      <nav aria-label="Main sections">
+        <ul class="flex items-center gap-1 list-none m-0 p-0 text-sm font-medium">
+          <li><a href="#" class="px-3 py-1.5 bg-bg-tertiary text-text-primary rounded-md no-underline transition-colors" data-nav="feed">Feed</a></li>
+          <li><a href="#" class="px-3 py-1.5 text-text-secondary hover:text-text-primary no-underline transition-colors" data-nav="digest">Digest</a></li>
+          <li><a href="#" class="px-3 py-1.5 text-text-secondary hover:text-text-primary no-underline transition-colors" data-nav="discover">Discover</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <div class="relative w-64">
+        <span class="absolute inset-y-0 left-3 flex items-center text-text-tertiary pointer-events-none text-xs">🔍</span>
+        <input type="text" id="searchInput" placeholder="Search articles..." class="w-full bg-bg-secondary border border-border rounded-md pl-8 pr-8 py-1 text-sm focus:outline-none focus:border-accent focus:bg-surface transition-colors">
+        <kbd class="absolute right-3 top-1/2 -translate-y-1/2 bg-bg-tertiary text-text-tertiary text-[10px] px-1.5 py-0.5 rounded border border-border">/</kbd>
+      </div>
+
+      <button id="addFeedBtn" class="w-8 h-8 flex items-center justify-center bg-bg-secondary hover:bg-bg-tertiary border border-border rounded-md text-text-primary cursor-pointer font-semibold transition-colors" aria-label="Add new feed">+</button>
+      
+      <div class="w-8 h-8 rounded-full bg-bg-tertiary border border-border flex items-center justify-center text-xs font-semibold text-text-secondary select-none" title="Guest Mode">
+        👤
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Layout -->
+  <div class="flex-1 flex overflow-hidden w-full">
+    
+    <!-- Sidebar -->
+    <aside class="w-[var(--spacing-sidebar)] bg-bg-secondary border-r border-border flex flex-col justify-between p-3 overflow-y-auto select-none shrink-0" aria-label="Feed subscriptions">
+      <div class="flex flex-col gap-4">
+        <ul class="list-none p-0 m-0 flex flex-col gap-0.5">
+          <li>
+            <a href="#" class="flex justify-between items-center px-3 py-2 bg-accent-subtle text-accent rounded-md text-sm font-medium no-underline transition-colors" data-filter="all">
+              <span>📰 All Items</span>
+              <span class="text-xs bg-accent/10 text-accent px-1.5 py-0.5 rounded-sm font-semibold" id="allCount">0</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex justify-between items-center px-3 py-2 text-text-secondary hover:bg-bg-tertiary hover:text-text-primary rounded-md text-sm font-medium no-underline transition-colors" data-filter="saved">
+              <span>🔖 Saved</span>
+              <span class="text-xs text-text-tertiary px-1.5 py-0.5" id="savedCount">0</span>
+            </a>
+          </li>
+        </ul>
+
+        <div>
+          <span class="text-[10px] font-bold text-text-tertiary uppercase tracking-wider px-3 block mb-2">Categories</span>
+          <ul class="list-none p-0 m-0 flex flex-col gap-0.5" id="categoryList">
+            <!-- Categories populated by JS -->
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-border-subtle pt-3 px-3 flex items-center gap-2 text-xs text-success font-medium">
+        <span>✔</span>
+        <span>All feeds healthy</span>
+      </div>
+    </aside>
+
+    <!-- Main Feed -->
+    <main class="flex-1 bg-bg-primary flex flex-col overflow-hidden">
+      <header class="px-6 py-3 border-b border-border flex justify-between items-center shrink-0 bg-surface">
+        <div class="flex items-center gap-2">
+          <h1 class="text-base font-semibold m-0" id="feedTitle">All Items</h1>
+          <span class="text-xs text-text-tertiary" id="unreadBadge">0 unread</span>
+        </div>
+        
+        <div class="flex items-center gap-2 text-xs">
+          <div class="flex border border-border rounded-md overflow-hidden bg-bg-secondary">
+            <button class="p-1.5 hover:bg-bg-tertiary border-r border-border transition-colors" data-view="compact" aria-label="Compact view">☰</button>
+            <button class="p-1.5 bg-bg-tertiary font-bold transition-colors" data-view="comfortable" aria-label="Comfortable view (active)">☷</button>
+          </div>
+          
+          <button id="markAllRead" class="border border-border rounded-md px-2.5 py-1.5 bg-bg-secondary hover:bg-bg-tertiary font-medium text-text-secondary cursor-pointer transition-colors">✓ Mark all as read</button>
+        </div>
+      </header>
+
+      <div class="flex-1 overflow-y-auto" id="feedStream">
+        <!-- Articles render here -->
+      </div>
+    </main>
+  </div>
+
+  <!-- Add Feed Modal -->
+  <div id="feedModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" style="display: none;">
+    <div class="bg-surface rounded-lg p-6 w-[400px] max-w-[90%] shadow-lg">
+      <h3 class="text-lg font-semibold mb-4 text-text-primary">Add RSS Feed</h3>
+      <input type="url" id="feedUrl" placeholder="https://example.com/feed.xml" class="w-full px-3 py-2 border border-border rounded-md bg-bg-primary text-text-primary focus:outline-none focus:border-accent transition-colors mb-4">
+      <div class="flex gap-2 justify-end">
+        <button id="closeModal" class="px-4 py-2 border border-border rounded-md bg-bg-secondary hover:bg-bg-tertiary text-text-secondary transition-colors">Cancel</button>
+        <button id="confirmAddFeed" class="px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-md transition-colors">Add Feed</button>
+      </div>
+      <p id="modalMessage" class="mt-3 text-sm text-error"></p>
+    </div>
+  </div>
+
+  <script>
+    // Sample feed data (19 articles across 5 categories)
+    const SAMPLE_ARTICLES = [
+      // Frontend (5 articles)
+      { id: 1, title: "The Surprising Truth About CSS Container Queries", content: "Container queries have been available for a while now, but most developers are still using them like media queries with a different syntax. There's a much more powerful mental model that unlocks truly reusable components.", source: "Josh Comeau", sourceIcon: "🔵", category: "Frontend", time: "2h ago", timestamp: Date.now() - 2 * 3600000, read: false, saved: false },
+      { id: 2, title: "React Server Components: A Year Later", content: "One year after the stable release, we look at adoption patterns, performance improvements, and what the ecosystem has learned about the RSC mental model.", source: "Kent C. Dodds", sourceIcon: "🟡", category: "Frontend", time: "5h ago", timestamp: Date.now() - 5 * 3600000, read: false, saved: false },
+      { id: 3, title: "Modern CSS Features You Can Use Today", content: "From :has() to subgrid to container queries, modern CSS has never been more powerful. Here's what's safe to use in production right now.", source: "CSS-Tricks", sourceIcon: "🔴", category: "Frontend", time: "1d ago", timestamp: Date.now() - 24 * 3600000, read: false, saved: false },
+      { id: 4, title: "TypeScript 5.5: What's New", content: "TypeScript 5.5 introduces isolated declarations, inference improvements, and editor productivity features that make development smoother than ever.", source: "TypeScript Blog", sourceIcon: "🔵", category: "Frontend", time: "2d ago", timestamp: Date.now() - 48 * 3600000, read: false, saved: false },
+      { id: 5, title: "Web Performance Metrics That Actually Matter", content: "Stop obsessing over Lighthouse scores and start measuring what users actually experience. A practical guide to Core Web Vitals and beyond.", source: "web.dev", sourceIcon: "🟢", category: "Frontend", time: "3d ago", timestamp: Date.now() - 72 * 3600000, read: false, saved: false },
+      
+      // Design (4 articles)
+      { id: 6, title: "Practical Guide To Designing For Colorblind Users", content: "Color blindness affects roughly 8% of men and 0.5% of women worldwide. Yet most interfaces rely heavily on color to convey meaning, status, and hierarchy. Here's how to design interfaces that work for everyone without sacrificing visual richness.", source: "Smashing Magazine", sourceIcon: "🔴", category: "Design", time: "3h ago", timestamp: Date.now() - 3 * 3600000, read: false, saved: false },
+      { id: 7, title: "Introducing Variables 2.0: Design Tokens Meet Real Logic", content: "Variables in Figma now support conditional logic, mathematical expressions, and cross-file references. This unlocks design system workflows that were previously only possible in code.", source: "Figma Blog", sourceIcon: "🎨", category: "Design", time: "6h ago", timestamp: Date.now() - 6 * 3600000, read: false, saved: false },
+      { id: 8, title: "Design Systems in 2026: A Retrospective", content: "Five years after the design system boom, we look at what worked, what failed, and where the industry is headed next.", source: "UX Collective", sourceIcon: "🎨", category: "Design", time: "1d ago", timestamp: Date.now() - 24 * 3600000, read: false, saved: false },
+      { id: 9, title: "The State of Mobile UX 2026", content: "Mobile usage continues to dominate. Here are the patterns, anti-patterns, and emerging trends in mobile design this year.", source: "NN Group", sourceIcon: "📱", category: "Design", time: "2d ago", timestamp: Date.now() - 48 * 3600000, read: false, saved: false },
+      
+      // Backend & DevOps (4 articles)
+      { id: 10, title: "How We Reduced P99 Latency by 60% with Edge-First Caching", content: "Our engineering team spent the last quarter rethinking how we cache at the edge. The result: dramatically lower tail latency for our most demanding customers, and lessons applicable to any distributed system.", source: "Cloudflare Blog", sourceIcon: "🟠", category: "Backend & DevOps", time: "4h ago", timestamp: Date.now() - 4 * 3600000, read: false, saved: false },
+      { id: 11, title: "Database Sharding Patterns at Scale", content: "When your database grows beyond a single machine, sharding becomes necessary. Here are the patterns that work for millions of users and how to implement them safely.", source: "High Scalability", sourceIcon: "🗄️", category: "Backend & DevOps", time: "1d ago", timestamp: Date.now() - 24 * 3600000, read: false, saved: false },
+      { id: 12, title: "Kubernetes: The Good, The Bad, The Overkill", content: "Is Kubernetes always the answer? A honest look at when to use it, when to avoid it, and what the alternatives look like in 2026.", source: "Kube Academy", sourceIcon: "☸️", category: "Backend & DevOps", time: "2d ago", timestamp: Date.now() - 48 * 3600000, read: false, saved: false },
+      { id: 13, title: "PostgreSQL 17: The Hidden Gems", content: "Beyond the headline features, PostgreSQL 17 includes subtle improvements that make a huge difference in production. Here's what you need to know.", source: "Postgres Weekly", sourceIcon: "🐘", category: "Backend & DevOps", time: "3d ago", timestamp: Date.now() - 72 * 3600000, read: false, saved: false },
+      
+      // AI & ML (3 articles)
+      { id: 14, title: "Building Effective RAG Systems: What Actually Works in Production", content: "After months of experimenting with retrieval-augmented generation in real applications, here's what I've learned about chunking strategies, embedding models, and the surprising importance of metadata filtering.", source: "Simon Willison", sourceIcon: "🤖", category: "AI & ML", time: "5h ago", timestamp: Date.now() - 5 * 3600000, read: false, saved: false },
+      { id: 15, title: "The Future of AI-Assisted Development", content: "Large language models are changing how we write code. But the real revolution isn't autocomplete — it's how we think about programming itself.", source: "Andreessen Horowitz", sourceIcon: "💡", category: "AI & ML", time: "1d ago", timestamp: Date.now() - 24 * 3600000, read: false, saved: false },
+      { id: 16, title: "Local LLMs: A Practical Guide", content: "Running LLMs on your own hardware is now viable. Here's what you need to know about models, hardware requirements, and use cases.", source: "MLOps Community", sourceIcon: "🧠", category: "AI & ML", time: "3d ago", timestamp: Date.now() - 72 * 3600000, read: false, saved: false },
+      
+      // General Tech (3 articles)
+      { id: 17, title: "Why We're Rewriting Our Frontend in Rust", content: "After years of dealing with JavaScript fatigue, we made a bold decision. Here's why and how it's going.", source: "TechCrunch", sourceIcon: "🦀", category: "General Tech", time: "8h ago", timestamp: Date.now() - 8 * 3600000, read: false, saved: false },
+      { id: 18, title: "The Rise of Edge Computing", content: "Serverless was just the beginning. Edge computing promises lower latency and new capabilities. Here's what developers need to know.", source: "TechCrunch", sourceIcon: "⚡", category: "General Tech", time: "2d ago", timestamp: Date.now() - 48 * 3600000, read: false, saved: false },
+      { id: 19, title: "Open Source Sustainability in 2026", content: "How are open source projects actually funding themselves? A survey of 500 maintainers reveals surprising answers.", source: "The New Stack", sourceIcon: "📊", category: "General Tech", time: "4d ago", timestamp: Date.now() - 96 * 3600000, read: false, saved: false }
+    ];
+
+    let articles = [...SAMPLE_ARTICLES];
+    let currentFilter = "all";
+    let currentCategory = null;
+    let searchQuery = "";
+    let viewMode = "comfortable";
+
+    // Load from localStorage
+    function loadState() {
+      const saved = localStorage.getItem("frontpage_state");
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          articles = parsed.articles;
+        } catch(e) { console.error("Failed to load state"); }
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem("frontpage_state", JSON.stringify({ articles }));
+    }
+
+    function markAsRead(articleId) {
+      const article = articles.find(a => a.id === articleId);
+      if (article && !article.read) {
+        article.read = true;
+        saveState();
+        renderFeed();
+        updateCounts();
+      }
+    }
+
+    function toggleSaved(articleId) {
+      const article = articles.find(a => a.id === articleId);
+      if (article) {
+        article.saved = !article.saved;
+        saveState();
+        renderFeed();
+        updateCounts();
+      }
+    }
+
+    function markAllRead() {
+      articles.forEach(article => { article.read = true; });
+      saveState();
+      renderFeed();
+      updateCounts();
+    }
+
+    function updateCounts() {
+      const total = articles.length;
+      const unread = articles.filter(a => !a.read).length;
+      const saved = articles.filter(a => a.saved).length;
+      
+      const allCount = document.getElementById('allCount');
+      const savedCount = document.getElementById('savedCount');
+      const unreadBadge = document.getElementById('unreadBadge');
+      
+      if (allCount) allCount.textContent = total;
+      if (savedCount) savedCount.textContent = saved;
+      if (unreadBadge) unreadBadge.textContent = `${unread} unread`;
+      
+      // Update category counts
+      const categories = [...new Set(articles.map(a => a.category))];
+      categories.forEach(cat => {
+        const count = articles.filter(a => a.category === cat).length;
+        const countElem = document.querySelector(`[data-category="${cat}"] .category-count`);
+        if (countElem) countElem.textContent = count;
+      });
+    }
+
+    function getFilteredArticles() {
+      let filtered = [...articles];
+      
+      if (currentFilter === "saved") {
+        filtered = filtered.filter(a => a.saved);
+      } else if (currentCategory) {
+        filtered = filtered.filter(a => a.category === currentCategory);
+      }
+      
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        filtered = filtered.filter(a => 
+          a.title.toLowerCase().includes(query) || 
+          a.source.toLowerCase().includes(query) ||
+          a.content.toLowerCase().includes(query)
+        );
+      }
+      
+      filtered.sort((a, b) => b.timestamp - a.timestamp);
+      return filtered;
+    }
+
+    function getCategoryColor(category) {
+      const colors = {
+        "Frontend": "text-blue-600 bg-blue-50 border-blue-100",
+        "Design": "text-pink-600 bg-pink-50 border-pink-100",
+        "Backend & DevOps": "text-green-600 bg-green-50 border-green-100",
+        "General Tech": "text-yellow-600 bg-yellow-50 border-yellow-100",
+        "AI & ML": "text-purple-600 bg-purple-50 border-purple-100"
+      };
+      return colors[category] || "text-gray-600 bg-gray-50 border-gray-100";
+    }
+
+    function renderFeed() {
+      const filtered = getFilteredArticles();
+      const stream = document.getElementById('feedStream');
+      if (!stream) return;
+      
+      if (filtered.length === 0) {
+        stream.innerHTML = `
+          <div class="flex items-center justify-center h-full">
+            <div class="text-center">
+              <div class="text-4xl mb-4">📭</div>
+              <h3 class="text-lg font-semibold mb-2">No articles found</h3>
+              <p class="text-text-secondary">Try adjusting your search or filters</p>
+            </div>
+          </div>
+        `;
+        return;
+      }
+      
+      // Group by date
+      const today = new Date().toDateString();
+      const yesterday = new Date(Date.now() - 86400000).toDateString();
+      
+      const grouped = filtered.reduce((acc, article) => {
+        const date = new Date(article.timestamp).toDateString();
+        let group;
+        if (date === today) group = "Today";
+        else if (date === yesterday) group = "Yesterday";
+        else group = date;
+        if (!acc[group]) acc[group] = [];
+        acc[group].push(article);
+        return acc;
+      }, {});
+      
+      const viewClass = viewMode === "comfortable" ? "gap-6" : "gap-3";
+      
+      stream.innerHTML = `
+        <div class="max-w-[var(--container-feed)] mx-auto px-6 py-4">
+          ${Object.entries(grouped).map(([groupName, groupArticles]) => `
+            <div class="text-[10px] font-bold text-text-tertiary uppercase tracking-wider mb-4 mt-6 first:mt-0 select-none">${groupName}</div>
+            <div class="flex flex-col ${viewClass}">
+              ${groupArticles.map(article => `
+                <article class="relative flex flex-col gap-1 group cursor-pointer focus-within:outline-none transition-colors" data-id="${article.id}">
+                  <span class="absolute left-[-16px] top-1.5 w-1.5 h-1.5 rounded-full ${article.read ? 'bg-bg-tertiary' : 'bg-unread'}" aria-hidden="true"></span>
+                  <div class="flex items-center gap-2 text-xs text-text-tertiary">
+                    <span class="font-semibold text-text-secondary">${article.sourceIcon || '📰'} ${article.source}</span>
+                    <span>•</span>
+                    <time>${article.time}</time>
+                    <button class="save-btn ml-auto text-text-tertiary hover:text-accent transition-colors" data-id="${article.id}">${article.saved ? '🔖' : '🏷️'}</button>
+                  </div>
+                  <h2 class="text-base font-semibold text-text-primary m-0 tracking-tight hover:text-accent transition-colors leading-snug">
+                    ${article.title}
+                  </h2>
+                  <p class="text-sm text-text-secondary m-0 leading-relaxed line-clamp-2 max-w-[var(--container-content)]">
+                    ${article.content}
+                  </p>
+                  <span class="text-[10px] font-semibold ${getCategoryColor(article.category)} px-2 py-0.5 rounded border w-fit mt-1 uppercase">${article.category}</span>
+                </article>
+              `).join('')}
+            </div>
+          `).join('')}
+        </div>
+      `;
+      
+      // Attach event listeners
+      document.querySelectorAll('article').forEach(article => {
+        article.addEventListener('click', (e) => {
+          if (e.target.classList.contains('save-btn')) return;
+          const id = parseInt(article.dataset.id);
+          markAsRead(id);
+        });
+      });
+      
+      document.querySelectorAll('.save-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id = parseInt(btn.dataset.id);
+          toggleSaved(id);
+        });
+      });
+    }
+
+    function renderCategories() {
+      const categories = [...new Set(articles.map(a => a.category))];
+      const categoryList = document.getElementById('categoryList');
+      if (!categoryList) return;
+      
+      categoryList.innerHTML = categories.map(cat => `
+        <li data-category="${cat}" class="cursor-pointer">
+          <div class="flex justify-between items-center px-3 py-1.5 text-sm font-medium text-text-secondary hover:bg-bg-tertiary hover:text-text-primary rounded-md transition-colors">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full ${getCategoryDotColor(cat)}"></span>
+              <span>${cat}</span>
+            </div>
+            <span class="text-xs text-text-tertiary category-count">${articles.filter(a => a.category === cat).length}</span>
+          </div>
+        </li>
+      `).join('');
+      
+      // Add click handlers
+      categoryList.querySelectorAll('li').forEach(li => {
+        li.addEventListener('click', () => {
+          const category = li.dataset.category;
+          setFilter('category', category);
+        });
+      });
+    }
+    
+    function getCategoryDotColor(category) {
+      const colors = {
+        "Frontend": "bg-blue-500",
+        "Design": "bg-pink-500",
+        "Backend & DevOps": "bg-green-500",
+        "General Tech": "bg-yellow-500",
+        "AI & ML": "bg-purple-500"
+      };
+      return colors[category] || "bg-gray-500";
+    }
+
+    function setFilter(type, value = null) {
+      if (type === 'all') {
+        currentFilter = 'all';
+        currentCategory = null;
+        const titleElem = document.getElementById('feedTitle');
+        if (titleElem) titleElem.textContent = 'All Items';
+      } else if (type === 'saved') {
+        currentFilter = 'saved';
+        currentCategory = null;
+        const titleElem = document.getElementById('feedTitle');
+        if (titleElem) titleElem.textContent = 'Saved Items';
+      } else if (type === 'category') {
+        currentFilter = null;
+        currentCategory = value;
+        const titleElem = document.getElementById('feedTitle');
+        if (titleElem) titleElem.textContent = value;
+      }
+      
+      renderFeed();
+      
+      // Update active states
+      document.querySelectorAll('[data-filter]').forEach(el => {
+        if ((type === 'all' && el.dataset.filter === 'all') ||
+            (type === 'saved' && el.dataset.filter === 'saved')) {
+          el.classList.add('bg-accent-subtle', 'text-accent');
+          el.classList.remove('text-text-secondary');
+        } else {
+          el.classList.remove('bg-accent-subtle', 'text-accent');
+          el.classList.add('text-text-secondary');
+        }
+      });
+    }
+
+    // Initialize
+    function init() {
+      loadState();
+      renderCategories();
+      updateCounts();
+      renderFeed();
+      
+      // Event listeners
+      const searchInput = document.getElementById('searchInput');
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          searchQuery = e.target.value;
+          renderFeed();
+        });
+      }
+      
+      const markAllReadBtn = document.getElementById('markAllRead');
+      if (markAllReadBtn) markAllReadBtn.addEventListener('click', markAllRead);
+      
+      document.querySelectorAll('[data-filter]').forEach(el => {
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          setFilter(el.dataset.filter);
+        });
+      });
+      
+      document.querySelectorAll('[data-view]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          viewMode = btn.dataset.view;
+          renderFeed();
+        });
+      });
+      
+      // Modal
+      const modal = document.getElementById('feedModal');
+      const addFeedBtn = document.getElementById('addFeedBtn');
+      const closeModal = document.getElementById('closeModal');
+      const confirmAddFeed = document.getElementById('confirmAddFeed');
+      
+      if (addFeedBtn) {
+        addFeedBtn.addEventListener('click', () => {
+          if (modal) modal.style.display = 'flex';
+        });
+      }
+      
+      if (closeModal) {
+        closeModal.addEventListener('click', () => {
+          if (modal) modal.style.display = 'none';
+          const feedUrl = document.getElementById('feedUrl');
+          const modalMessage = document.getElementById('modalMessage');
+          if (feedUrl) feedUrl.value = '';
+          if (modalMessage) modalMessage.textContent = '';
+        });
+      }
+      
+      if (confirmAddFeed) {
+        confirmAddFeed.addEventListener('click', () => {
+          const url = document.getElementById('feedUrl');
+          const modalMessage = document.getElementById('modalMessage');
+          if (!url || !url.value) {
+            if (modalMessage) modalMessage.textContent = 'Please enter a feed URL';
+            return;
+          }
+          if (modalMessage) {
+            modalMessage.textContent = '✨ Demo: In production, this would fetch RSS feeds. For now, enjoy the curated feeds!';
+            modalMessage.classList.add('text-success');
+          }
+          setTimeout(() => {
+            if (modal) modal.style.display = 'none';
+            if (url) url.value = '';
+            if (modalMessage) modalMessage.textContent = '';
+          }, 2000);
+        });
+      }
+      
+      // Keyboard shortcut
+      document.addEventListener('keydown', (e) => {
+        if (e.key === '/' && document.activeElement !== searchInput) {
+          e.preventDefault();
+          if (searchInput) searchInput.focus();
+        }
+      });
+    }
+    
+    init();
+  </script>
+</body>
+</html>
