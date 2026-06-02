@@ -1,41 +1,187 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="antialiased h-full">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Frontpage - RSS Aggregator with OPML Import</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Frontpage - All Items | RSS Feed Aggregator</title>
+  <meta name="description" content="Personalized RSS and Atom feed reader. Read the latest from Frontend, Design, Backend, Tech, and AI blogs.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   
   <style>
+    /* ========== BRAND TOKENS (Light Mode) ========== */
     :root {
-      --color-accent: #2563eb;
-      --color-accent-subtle: #eff6ff;
-      --color-bg-primary: #ffffff;
-      --color-bg-secondary: #f8fafc;
-      --color-bg-tertiary: #f1f5f9;
-      --color-surface: #ffffff;
-      --color-border: #e2e8f0;
-      --color-text-primary: #0f172a;
-      --color-text-secondary: #475569;
-      --color-text-tertiary: #94a3b8;
-      --color-success: #10b981;
-      --color-error: #ef4444;
-      --color-warning: #f59e0b;
-      --spacing-sidebar: 280px;
-      --container-feed: 800px;
+      /* Colors - Light Mode */
+      --color-bg-primary: #FFFFFF;
+      --color-bg-secondary: #F8F9FA;
+      --color-bg-tertiary: #F1F3F5;
+      --color-surface: #FFFFFF;
+      --color-border: #E1E4E8;
+      --color-border-subtle: #ECEEF0;
+      --color-text-primary: #1A1D21;
+      --color-text-secondary: #57606A;
+      --color-text-tertiary: #8B949E;
+      --color-accent: #2563EB;
+      --color-accent-hover: #1D4ED8;
+      --color-accent-subtle: #EFF6FF;
+      --color-success: #16A34A;
+      --color-warning: #CA8A04;
+      --color-error: #DC2626;
+      --color-unread-indicator: #2563EB;
+      --color-focus-ring: #2563EB;
+      
+      /* Typography */
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-serif: Georgia, Charter, serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+      
+      /* Type Scale (1.25 ratio, 16px base) */
+      --text-xs: 0.6875rem;     /* 11px */
+      --text-sm: 0.8125rem;     /* 13px */
+      --text-base: 1rem;        /* 16px */
+      --text-lg: 1.25rem;       /* 20px */
+      --text-xl: 1.5625rem;     /* 25px */
+      --text-2xl: 1.9375rem;    /* 31px */
+      --text-3xl: 2.4375rem;    /* 39px */
+      
+      /* Line Heights */
+      --leading-tight: 1.2;
+      --leading-snug: 1.3;
+      --leading-normal: 1.4;
+      --leading-relaxed: 1.45;
+      --leading-loose: 1.55;
+      
+      /* Font Weights */
+      --font-regular: 400;
+      --font-medium: 500;
+      --font-semibold: 600;
+      --font-bold: 700;
+      
+      /* Spacing (4px base) */
+      --space-1: 0.25rem;   /* 4px */
+      --space-2: 0.5rem;    /* 8px */
+      --space-3: 0.75rem;   /* 12px */
+      --space-4: 1rem;      /* 16px */
+      --space-5: 1.25rem;   /* 20px */
+      --space-6: 1.5rem;    /* 24px */
+      --space-8: 2rem;      /* 32px */
+      --space-10: 2.5rem;   /* 40px */
+      --space-12: 3rem;     /* 48px */
+      --space-16: 4rem;     /* 64px */
+      --space-20: 5rem;     /* 80px */
+      
+      /* Border Radius */
+      --radius-sm: 0.25rem;
+      --radius-md: 0.5rem;
+      --radius-lg: 0.75rem;
+      --radius-xl: 1rem;
+      --radius-full: 9999rem;
+      
+      /* Shadows - Light Mode */
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.04);
+      
+      /* Layout */
+      --sidebar-width: 260px;
+      --content-max-width: 45rem;
+      --feed-max-width: 60rem;
+      --page-max-width: 80rem;
     }
     
-    .bg-accent { background: var(--color-accent); }
-    .bg-accent-subtle { background: var(--color-accent-subtle); }
-    .bg-bg-primary { background: var(--color-bg-primary); }
-    .bg-bg-secondary { background: var(--color-bg-secondary); }
-    .bg-bg-tertiary { background: var(--color-bg-tertiary); }
-    .text-accent { color: var(--color-accent); }
-    .text-text-primary { color: var(--color-text-primary); }
-    .text-text-secondary { color: var(--color-text-secondary); }
-    .text-text-tertiary { color: var(--color-text-tertiary); }
-    .border-border { border-color: var(--color-border); }
+    /* ========== DARK MODE ========== */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-bg-primary: #0D1117;
+        --color-bg-secondary: #161B22;
+        --color-bg-tertiary: #21262D;
+        --color-surface: #161B22;
+        --color-border: #30363D;
+        --color-border-subtle: #21262D;
+        --color-text-primary: #E6EDF3;
+        --color-text-secondary: #8B949E;
+        --color-text-tertiary: #6E7681;
+        --color-accent: #58A6FF;
+        --color-accent-hover: #79C0FF;
+        --color-accent-subtle: #1A2332;
+        --color-success: #3FB950;
+        --color-warning: #D29922;
+        --color-error: #F85149;
+        --color-unread-indicator: #58A6FF;
+        --color-focus-ring: #58A6FF;
+        
+        /* Dark Mode Shadows */
+        --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+        --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -2px rgba(0,0,0,0.3);
+        --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.5), 0 4px 6px -4px rgba(0,0,0,0.3);
+      }
+    }
     
+    /* ========== BASE STYLES ========== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background: var(--color-bg-primary);
+      color: var(--color-text-primary);
+      font-family: var(--font-sans);
+      font-size: var(--text-base);
+      line-height: var(--leading-loose);
+      height: 100%;
+    }
+    
+    /* Focus ring - WCAG 2.1 */
+    *:focus-visible {
+      outline: 2px solid var(--color-focus-ring);
+      outline-offset: 2px;
+      border-radius: var(--radius-sm);
+    }
+    
+    /* Skip link */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--color-accent);
+      color: white;
+      padding: var(--space-2) var(--space-4);
+      text-decoration: none;
+      z-index: 100;
+      transition: top 0.2s;
+    }
+    .skip-link:focus {
+      top: 0;
+    }
+    
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    
+    /* Screen reader only */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+    
+    /* Utility classes */
     .line-clamp-2 {
       display: -webkit-box;
       -webkit-line-clamp: 2;
@@ -43,11 +189,127 @@
       overflow: hidden;
     }
     
-    .transition-colors { transition: all 0.2s ease; }
-    .sidebar-width { width: var(--spacing-sidebar); }
-    .max-w-feed { max-width: var(--container-feed); }
+    /* Layout utilities */
+    .sidebar-width { width: var(--sidebar-width); }
+    .max-w-feed { max-width: var(--feed-max-width); }
+    .max-w-content { max-width: var(--content-max-width); }
     
-    /* Modal animacija */
+    /* Spacing utilities */
+    .p-3 { padding: var(--space-3); }
+    .p-4 { padding: var(--space-4); }
+    .p-6 { padding: var(--space-6); }
+    .px-3 { padding-left: var(--space-3); padding-right: var(--space-3); }
+    .px-4 { padding-left: var(--space-4); padding-right: var(--space-4); }
+    .px-6 { padding-left: var(--space-6); padding-right: var(--space-6); }
+    .py-1 { padding-top: var(--space-1); padding-bottom: var(--space-1); }
+    .py-1\.5 { padding-top: 0.375rem; padding-bottom: 0.375rem; }
+    .py-2 { padding-top: var(--space-2); padding-bottom: var(--space-2); }
+    .py-3 { padding-top: var(--space-3); padding-bottom: var(--space-3); }
+    .mb-1 { margin-bottom: var(--space-1); }
+    .mb-2 { margin-bottom: var(--space-2); }
+    .mb-4 { margin-bottom: var(--space-4); }
+    .mt-2 { margin-top: var(--space-2); }
+    .mt-4 { margin-top: var(--space-4); }
+    .gap-1 { gap: var(--space-1); }
+    .gap-2 { gap: var(--space-2); }
+    .gap-3 { gap: var(--space-3); }
+    .gap-4 { gap: var(--space-4); }
+    .gap-6 { gap: var(--space-6); }
+    
+    /* Color utilities */
+    .bg-accent { background: var(--color-accent); }
+    .bg-accent-subtle { background: var(--color-accent-subtle); }
+    .bg-bg-primary { background: var(--color-bg-primary); }
+    .bg-bg-secondary { background: var(--color-bg-secondary); }
+    .bg-bg-tertiary { background: var(--color-bg-tertiary); }
+    .bg-surface { background: var(--color-surface); }
+    .text-accent { color: var(--color-accent); }
+    .text-text-primary { color: var(--color-text-primary); }
+    .text-text-secondary { color: var(--color-text-secondary); }
+    .text-text-tertiary { color: var(--color-text-tertiary); }
+    .text-success { color: var(--color-success); }
+    .border-border { border-color: var(--color-border); }
+    .border-border-subtle { border-color: var(--color-border-subtle); }
+    
+    /* Border utilities */
+    .border { border: 1px solid var(--color-border); }
+    .border-b { border-bottom: 1px solid var(--color-border); }
+    .border-r { border-right: 1px solid var(--color-border); }
+    .border-t { border-top: 1px solid var(--color-border-subtle); }
+    .rounded { border-radius: var(--radius-sm); }
+    .rounded-md { border-radius: var(--radius-md); }
+    .rounded-lg { border-radius: var(--radius-lg); }
+    .rounded-full { border-radius: var(--radius-full); }
+    
+    /* Typography utilities */
+    .text-xs { font-size: var(--text-xs); line-height: var(--leading-relaxed); }
+    .text-sm { font-size: var(--text-sm); line-height: var(--leading-relaxed); }
+    .text-base { font-size: var(--text-base); line-height: var(--leading-loose); }
+    .text-lg { font-size: var(--text-lg); line-height: var(--leading-normal); }
+    .text-xl { font-size: var(--text-xl); line-height: var(--leading-snug); }
+    .font-regular { font-weight: var(--font-regular); }
+    .font-medium { font-weight: var(--font-medium); }
+    .font-semibold { font-weight: var(--font-semibold); }
+    .font-bold { font-weight: var(--font-bold); }
+    .font-sans { font-family: var(--font-sans); }
+    .font-serif { font-family: var(--font-serif); }
+    .font-mono { font-family: var(--font-mono); }
+    .tracking-tight { letter-spacing: -0.025em; }
+    .tracking-wider { letter-spacing: 0.05em; }
+    .uppercase { text-transform: uppercase; }
+    
+    /* Interactive utilities */
+    .cursor-pointer { cursor: pointer; }
+    .transition-colors { transition: all 0.2s ease; }
+    .hover\:bg-bg-tertiary:hover { background: var(--color-bg-tertiary); }
+    .hover\:text-accent:hover { color: var(--color-accent); }
+    .hover\:text-text-primary:hover { color: var(--color-text-primary); }
+    .group-hover\:text-accent:hover { color: var(--color-accent); }
+    
+    /* Flex utilities */
+    .flex { display: flex; }
+    .flex-col { flex-direction: column; }
+    .flex-1 { flex: 1; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .justify-center { justify-content: center; }
+    .shrink-0 { flex-shrink: 0; }
+    .overflow-hidden { overflow: hidden; }
+    .overflow-y-auto { overflow-y: auto; }
+    .w-full { width: 100%; }
+    .w-6 { width: 1.5rem; }
+    .w-8 { width: 2rem; }
+    .h-6 { height: 1.5rem; }
+    .h-8 { height: 2rem; }
+    .h-14 { height: 3.5rem; }
+    .h-full { height: 100%; }
+    .absolute { position: absolute; }
+    .relative { position: relative; }
+    .left-0 { left: 0; }
+    .left-3 { left: 0.75rem; }
+    .right-3 { right: 0.75rem; }
+    .top-1\.5 { top: 0.375rem; }
+    .top-1\/2 { top: 50%; }
+    .-translate-y-1\/2 { transform: translateY(-50%); }
+    .list-none { list-style: none; }
+    .no-underline { text-decoration: none; }
+    .select-none { user-select: none; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .text-left { text-align: left; }
+    .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    
+    /* Article hover state */
+    .article-item {
+      transition: background 0.2s ease;
+      padding: var(--space-2);
+      margin: 0 calc(-1 * var(--space-2));
+      border-radius: var(--radius-md);
+    }
+    .article-item:hover {
+      background: var(--color-bg-tertiary);
+    }
+    
+    /* Modal overlay */
     .modal {
       display: none;
       position: fixed;
@@ -59,8 +321,8 @@
     }
     .modal.active { display: flex; }
     .modal-content {
-      background: white;
-      border-radius: 0.5rem;
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
       max-width: 500px;
       width: 90%;
       max-height: 80vh;
@@ -68,112 +330,146 @@
     }
   </style>
 </head>
-<body class="bg-bg-primary text-text-primary font-sans antialiased h-full flex flex-col overflow-hidden">
+<body class="font-sans antialiased h-full flex flex-col overflow-hidden">
 
-  <!-- Top Navbar -->
-  <header class="h-14 border-b border-border px-4 flex items-center justify-between bg-surface shrink-0">
+  <!-- SKIP LINKS -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <a href="#sidebar-nav" class="skip-link" style="left: 120px;">Skip to navigation</a>
+
+  <!-- ARIA Live regions -->
+  <div class="sr-only" aria-live="polite" id="liveStatus"></div>
+  <div class="sr-only" aria-live="assertive" id="alertStatus"></div>
+
+  <!-- HEADER -->
+  <header role="banner" class="h-14 border-b px-4 flex items-center justify-between bg-surface shrink-0">
     <div class="flex items-center gap-8">
-      <div class="flex items-center gap-2 font-bold text-lg">
-        <div class="w-6 h-6 bg-accent rounded-md flex items-center justify-center text-white text-xs font-bold">F</div>
-        <span>Frontpage</span>
+      <div class="flex items-center gap-2 font-bold text-lg select-none tracking-tight" aria-label="Frontpage homepage">
+        <div class="w-6 h-6 bg-accent rounded-md flex items-center justify-center text-white text-xs font-bold" aria-hidden="true">F</div>
+        <span class="font-semibold">Frontpage</span>
       </div>
-      <nav class="flex gap-1">
-        <a href="#" class="px-3 py-1.5 bg-bg-tertiary text-text-primary rounded-md text-sm no-underline">Feed</a>
-        <a href="#" class="px-3 py-1.5 text-text-secondary hover:text-text-primary rounded-md text-sm no-underline">Digest</a>
-        <a href="#" class="px-3 py-1.5 text-text-secondary hover:text-text-primary rounded-md text-sm no-underline">Discover</a>
+      
+      <nav role="navigation" aria-label="Main sections">
+        <ul class="flex gap-1 list-none m-0 p-0">
+          <li><a href="#" class="px-3 py-1.5 bg-bg-tertiary text-text-primary rounded-md text-sm font-medium no-underline transition-colors" aria-current="page">Feed</a></li>
+          <li><a href="#" class="px-3 py-1.5 text-text-secondary hover:text-text-primary rounded-md text-sm font-medium no-underline transition-colors">Digest</a></li>
+          <li><a href="#" class="px-3 py-1.5 text-text-secondary hover:text-text-primary rounded-md text-sm font-medium no-underline transition-colors">Discover</a></li>
+        </ul>
       </nav>
     </div>
+    
     <div class="flex items-center gap-3">
-      <div class="relative w-64">
-        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-text-tertiary text-xs">🔍</span>
-        <input type="text" id="searchInput" placeholder="Search..." class="w-full bg-bg-secondary border border-border rounded-md pl-8 pr-3 py-1 text-sm focus:outline-none focus:border-accent">
+      <div class="relative">
+        <label for="searchInput" class="sr-only">Search articles</label>
+        <div class="relative w-64">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-text-tertiary text-xs" aria-hidden="true">🔍</span>
+          <input type="search" id="searchInput" placeholder="Search articles..." 
+                 class="w-full bg-bg-secondary border border-border rounded-md pl-8 pr-3 py-1 text-sm focus:outline-none focus:border-accent transition-colors">
+          <kbd class="absolute right-3 top-1/2 -translate-y-1/2 bg-bg-tertiary text-text-tertiary text-[10px] px-1.5 py-0.5 rounded border-border" aria-hidden="true">/</kbd>
+        </div>
       </div>
-      <button id="importOpmlBtn" class="px-3 py-1.5 text-sm bg-bg-secondary border border-border rounded-md hover:bg-bg-tertiary transition-colors">
+      
+      <button id="importOpmlBtn" class="px-3 py-1.5 text-sm bg-bg-secondary border border-border rounded-md hover:bg-bg-tertiary transition-colors font-medium text-text-secondary"
+              aria-label="Import OPML file - upload your feed subscriptions">
         📁 Import OPML
       </button>
-      <button id="exportOpmlBtn" class="px-3 py-1.5 text-sm bg-bg-secondary border border-border rounded-md hover:bg-bg-tertiary transition-colors">
+      <button id="exportOpmlBtn" class="px-3 py-1.5 text-sm bg-bg-secondary border border-border rounded-md hover:bg-bg-tertiary transition-colors font-medium text-text-secondary"
+              aria-label="Export OPML file - download your feed subscriptions">
         📤 Export OPML
       </button>
-      <div class="w-8 h-8 rounded-full bg-bg-tertiary border border-border flex items-center justify-center text-sm">👤</div>
+      
+      <button class="w-8 h-8 rounded-full bg-bg-tertiary border border-border flex items-center justify-center text-sm transition-colors hover:bg-bg-tertiary"
+              aria-label="User menu - guest mode active">
+        👤
+      </button>
     </div>
   </header>
 
   <div class="flex-1 flex overflow-hidden">
-    <!-- Sidebar -->
-    <aside class="sidebar-width bg-bg-secondary border-r border-border flex flex-col p-3 overflow-y-auto shrink-0">
-      <div class="flex-1">
-        <div class="mb-6">
-          <div class="flex justify-between items-center px-3 py-2 bg-accent-subtle text-accent rounded-md mb-1 cursor-pointer" data-filter="all">
-            <span>📰 All Items</span>
-            <span class="text-xs bg-accent/10 text-accent px-1.5 py-0.5 rounded" id="totalCount">0</span>
-          </div>
-          <div class="flex justify-between items-center px-3 py-2 text-text-secondary hover:bg-bg-tertiary rounded-md cursor-pointer" data-filter="saved">
-            <span>🔖 Saved</span>
-            <span class="text-xs" id="savedCount">0</span>
-          </div>
-        </div>
-        
-        <div>
-          <div class="text-xs font-bold text-text-tertiary uppercase px-3 mb-2">Categories</div>
-          <div id="categoryList" class="space-y-1"></div>
-        </div>
-        
-        <div class="mt-6">
-          <div class="text-xs font-bold text-text-tertiary uppercase px-3 mb-2">Feeds</div>
-          <div id="feedList" class="space-y-1 max-h-96 overflow-y-auto"></div>
-        </div>
+    
+    <!-- SIDEBAR -->
+    <aside id="sidebar-nav" role="navigation" aria-label="Feed categories and subscriptions" 
+           class="sidebar-width bg-bg-secondary border-r border-border flex flex-col p-3 overflow-y-auto shrink-0">
+      
+      <div class="mb-6" role="group" aria-label="Quick filters">
+        <button data-filter="all" class="flex justify-between items-center w-full px-3 py-2 bg-accent-subtle text-accent rounded-md mb-1 text-left transition-colors font-medium"
+                aria-label="Show all articles from all feeds">
+          <span>📰 All Items</span>
+          <span class="text-xs bg-accent/10 text-accent px-1.5 py-0.5 rounded" id="totalCount" aria-label="Total articles count">0</span>
+        </button>
+        <button data-filter="saved" class="flex justify-between items-center w-full px-3 py-2 text-text-secondary hover:bg-bg-tertiary rounded-md text-left transition-colors font-medium"
+                aria-label="Show only saved bookmarked articles">
+          <span>🔖 Saved</span>
+          <span class="text-xs" id="savedCount" aria-label="Saved articles count">0</span>
+        </button>
       </div>
-      <div class="border-t border-border pt-3 px-3 flex items-center gap-2 text-xs text-success">
-        <span>✅</span>
-        <span id="feedCountStatus">0 feeds</span>
+      
+      <div>
+        <h2 class="text-xs font-bold text-text-tertiary uppercase tracking-wider px-3 mb-2">Categories</h2>
+        <div id="categoryList" class="space-y-1" role="list" aria-label="Feed categories"></div>
+      </div>
+      
+      <div class="mt-6">
+        <h2 class="text-xs font-bold text-text-tertiary uppercase tracking-wider px-3 mb-2">Subscriptions</h2>
+        <div id="feedList" class="space-y-1 max-h-96 overflow-y-auto" role="list" aria-label="Your feed subscriptions"></div>
+      </div>
+      
+      <div class="border-t pt-3 px-3 flex items-center gap-2 text-xs text-success mt-auto">
+        <span aria-hidden="true">✅</span>
+        <span id="feedCountStatus" class="font-medium">0 feeds</span>
+        <span class="sr-only">All feeds are currently healthy</span>
       </div>
     </aside>
 
-    <!-- Main Feed -->
-    <main class="flex-1 flex flex-col overflow-hidden">
-      <div class="px-6 py-3 border-b border-border flex justify-between items-center bg-surface shrink-0">
+    <!-- MAIN CONTENT -->
+    <main id="main-content" role="main" class="flex-1 flex flex-col overflow-hidden" tabindex="-1">
+      
+      <div class="px-6 py-3 border-b flex justify-between items-center bg-surface shrink-0">
         <div>
-          <h1 class="text-lg font-semibold inline" id="feedTitle">All Items</h1>
-          <span class="text-xs text-text-tertiary ml-2" id="unreadCount">0 unread</span>
+          <h1 class="text-xl font-semibold inline" id="feedTitle">All Items</h1>
+          <span class="text-sm text-text-tertiary ml-2" id="unreadCount" aria-live="polite">0 unread</span>
         </div>
-        <button id="markAllRead" class="px-3 py-1.5 text-sm bg-bg-secondary border border-border rounded-md hover:bg-bg-tertiary">✓ Mark all as read</button>
+        <button id="markAllRead" class="px-3 py-1.5 text-sm bg-bg-secondary border border-border rounded-md hover:bg-bg-tertiary transition-colors font-medium text-text-secondary"
+                aria-label="Mark all articles as read">
+          ✓ Mark all as read
+        </button>
       </div>
       
-      <div id="feedStream" class="flex-1 overflow-y-auto p-6">
+      <div id="feedStream" class="flex-1 overflow-y-auto p-6" role="feed" aria-label="Article feed">
         <div class="max-w-feed mx-auto text-center py-12">
-          <div class="text-4xl mb-3">📡</div>
-          <h3 class="text-lg font-semibold mb-2">No feeds yet</h3>
-          <p class="text-text-secondary text-sm mb-4">Import OPML file to get started</p>
-          <button id="importEmptyBtn" class="px-4 py-2 bg-accent text-white rounded-md hover:bg-accent/90">📁 Import OPML</button>
+          <div class="text-4xl mb-3" aria-hidden="true">📡</div>
+          <h2 class="text-lg font-semibold mb-2">Loading feeds...</h2>
+          <p class="text-sm text-text-secondary">Fetching real content from RSS and Atom feeds</p>
+          <div class="mt-4 text-xs text-text-tertiary" id="fetchProgress" aria-live="polite">0/19 feeds loaded</div>
         </div>
       </div>
     </main>
   </div>
 
-  <!-- OPML Import Modal -->
-  <div id="opmlModal" class="modal">
-    <div class="modal-content p-6">
-      <h3 class="text-lg font-semibold mb-4">Import OPML</h3>
-      <p class="text-sm text-text-secondary mb-4">Upload your OPML file or paste OPML content</p>
-      
-      <div class="mb-4">
-        <label class="block text-sm font-medium mb-2">Upload file:</label>
-        <input type="file" id="opmlFile" accept=".opml,.xml" class="w-full text-sm">
-      </div>
-      
-      <div class="mb-4">
-        <label class="block text-sm font-medium mb-2">Or paste OPML content:</label>
-        <textarea id="opmlContent" rows="6" class="w-full px-3 py-2 border border-border rounded-md text-sm font-mono" placeholder='<?xml version="1.0"?><opml version="2.0">...'></textarea>
-      </div>
-      
-      <div id="importPreview" class="mb-4 hidden">
-        <div class="text-sm font-medium mb-2">Preview:</div>
-        <div id="previewList" class="max-h-40 overflow-y-auto text-sm space-y-1"></div>
-      </div>
-      
-      <div class="flex gap-2 justify-end">
-        <button id="closeModal" class="px-4 py-2 border border-border rounded-md hover:bg-bg-tertiary">Cancel</button>
-        <button id="confirmImport" class="px-4 py-2 bg-accent text-white rounded-md hover:bg-accent/90">Import</button>
+  <!-- OPML MODAL -->
+  <div id="opmlModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-overlay" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;">
+      <div class="modal-content p-6" role="document">
+        <h2 id="modalTitle" class="text-lg font-semibold mb-4">Import OPML</h2>
+        <p class="text-sm text-text-secondary mb-4">Upload your OPML file or paste OPML content to import feeds.</p>
+        
+        <div class="mb-4">
+          <label for="opmlFile" class="block text-sm font-medium mb-2">Upload file:</label>
+          <input type="file" id="opmlFile" accept=".opml,.xml" class="w-full text-sm">
+          <div id="fileHelp" class="text-xs text-text-tertiary mt-1">Supported formats: OPML 2.0, .opml or .xml files</div>
+        </div>
+        
+        <div class="mb-4">
+          <label for="opmlContent" class="block text-sm font-medium mb-2">Or paste OPML content:</label>
+          <textarea id="opmlContent" rows="6" class="w-full px-3 py-2 border border-border rounded-md text-sm font-mono bg-bg-primary text-text-primary"
+                    placeholder='&lt;?xml version="1.0"?&gt;&lt;opml version="2.0"&gt;...'></textarea>
+        </div>
+        
+        <div class="flex gap-2 justify-end">
+          <button id="closeModal" class="px-4 py-2 border border-border rounded-md hover:bg-bg-tertiary transition-colors font-medium text-text-secondary"
+                  aria-label="Cancel import">Cancel</button>
+          <button id="confirmImport" class="px-4 py-2 bg-accent text-white rounded-md hover:bg-accent-hover transition-colors font-medium"
+                  aria-label="Confirm import feeds">Import</button>
+        </div>
       </div>
     </div>
   </div>
@@ -189,7 +485,7 @@
     const STORAGE_SAVED = 'frontpage_saved';
     
     // App state
-    let userFeeds = [];  // { id, title, feedUrl, siteUrl, category, icon }
+    let userFeeds = [];
     let allArticles = [];
     let readArticles = new Set();
     let savedArticles = new Set();
@@ -197,7 +493,17 @@
     let currentCategory = null;
     let searchQuery = '';
     
-    // Default feeds (iz sample-feeds.opml)
+    function announce(message, assertive = false) {
+      const target = assertive ? document.getElementById('alertStatus') : document.getElementById('liveStatus');
+      if (target) {
+        target.textContent = message;
+        setTimeout(() => {
+          if (target.textContent === message) target.textContent = '';
+        }, 3000);
+      }
+    }
+    
+    // Default feeds
     const DEFAULT_FEEDS = [
       { id: '1', title: 'CSS-Tricks', feedUrl: 'https://css-tricks.com/feed/', category: 'Frontend', icon: '🎨' },
       { id: '2', title: 'Smashing Magazine', feedUrl: 'https://www.smashingmagazine.com/feed/', category: 'Frontend', icon: '🔥' },
@@ -220,7 +526,6 @@
       { id: '19', title: 'Hugging Face Blog', feedUrl: 'https://huggingface.co/blog/feed.xml', category: 'AI & ML', icon: '🤗' }
     ];
     
-    // Učitaj stanje
     function loadState() {
       const savedFeeds = localStorage.getItem(STORAGE_FEEDS);
       if (savedFeeds) {
@@ -242,17 +547,13 @@
       if (saved) savedArticles = new Set(JSON.parse(saved));
     }
     
-    function saveFeeds() {
-      localStorage.setItem(STORAGE_FEEDS, JSON.stringify(userFeeds));
-    }
-    
+    function saveFeeds() { localStorage.setItem(STORAGE_FEEDS, JSON.stringify(userFeeds)); }
     function saveArticles() {
       localStorage.setItem(STORAGE_ARTICLES, JSON.stringify(allArticles));
       localStorage.setItem(STORAGE_READ, JSON.stringify(Array.from(readArticles)));
       localStorage.setItem(STORAGE_SAVED, JSON.stringify(Array.from(savedArticles)));
     }
     
-    // Parsiraj RSS/Atom feed
     async function fetchFeed(feed) {
       try {
         const response = await fetch(CORS_PROXY + encodeURIComponent(feed.feedUrl));
@@ -269,7 +570,8 @@
           const entries = doc.querySelectorAll('entry');
           entries.forEach((entry, idx) => {
             const title = entry.querySelector('title')?.textContent || 'No title';
-            const link = entry.querySelector('link')?.getAttribute('href') || '#';
+            const linkEl = entry.querySelector('link');
+            const link = linkEl?.getAttribute('href') || '#';
             const summary = entry.querySelector('summary')?.textContent || '';
             const content = entry.querySelector('content')?.textContent || summary;
             const published = entry.querySelector('published')?.textContent || entry.querySelector('updated')?.textContent;
@@ -317,23 +619,25 @@
         return items.slice(0, 15);
       } catch (error) {
         console.error(`Failed to fetch ${feed.title}:`, error);
+        announce(`Failed to load ${feed.title}: ${error.message}`, true);
         return [];
       }
     }
     
-    // Učitaj sve feedove
     async function loadAllFeeds() {
       const feedStream = document.getElementById('feedStream');
       feedStream.innerHTML = `
         <div class="max-w-feed mx-auto text-center py-12">
           <div class="animate-pulse">
-            <div class="text-4xl mb-3">📡</div>
-            <h3 class="text-lg font-semibold mb-2">Loading ${userFeeds.length} feeds...</h3>
-            <p class="text-text-secondary text-sm">Fetching real content from RSS/Atom feeds</p>
-            <div class="mt-4 text-xs text-text-tertiary" id="fetchProgress">0/${userFeeds.length}</div>
+            <div class="text-4xl mb-3" aria-hidden="true">📡</div>
+            <h2 class="text-lg font-semibold mb-2">Loading ${userFeeds.length} feeds...</h2>
+            <p class="text-sm text-text-secondary">Fetching real content from RSS and Atom feeds</p>
+            <div class="mt-4 text-xs text-text-tertiary" id="fetchProgress" aria-live="polite">0/${userFeeds.length}</div>
           </div>
         </div>
       `;
+      
+      announce(`Loading ${userFeeds.length} feeds...`);
       
       allArticles = [];
       let completed = 0;
@@ -346,7 +650,6 @@
         if (progressElem) progressElem.textContent = `${completed}/${userFeeds.length}`;
       }
       
-      // Dodaj read/saved status
       allArticles = allArticles.map(article => ({
         ...article,
         read: readArticles.has(article.id),
@@ -359,6 +662,8 @@
       renderCategories();
       renderFeedList();
       renderFeed();
+      
+      announce(`Loaded ${allArticles.length} total articles from ${userFeeds.length} feeds`);
     }
     
     function decodeHTMLEntities(text) {
@@ -367,7 +672,6 @@
       return textarea.value;
     }
     
-    // OPML Parser (handles all edge cases)
     function parseOPML(xmlText) {
       const parser = new DOMParser();
       const doc = parser.parseFromString(xmlText, 'text/xml');
@@ -379,13 +683,9 @@
         const xmlUrl = outline.getAttribute('xmlUrl') || outline.getAttribute('xmlurl');
         const title = outline.getAttribute('title') || outline.getAttribute('text') || '';
         
-        // Ako ima xmlUrl, to je feed
         if (xmlUrl && type !== 'include') {
-          // Edge case: Duplicate detection
           if (!seenUrls.has(xmlUrl)) {
             seenUrls.add(xmlUrl);
-            
-            // Edge case: Dead feed (example.com)
             const isDeadFeed = xmlUrl.includes('example.com') || xmlUrl.includes('this-feed-does-not-exist');
             
             feeds.push({
@@ -400,7 +700,6 @@
           }
         }
         
-        // Rekurzivno obradi decu
         const children = outline.children;
         for (let i = 0; i < children.length; i++) {
           const child = children[i];
@@ -427,19 +726,17 @@
       return icons[Math.floor(Math.random() * icons.length)];
     }
     
-    // Render funkcije
     function renderCategories() {
       const categories = [...new Set(userFeeds.map(f => f.category))];
       const container = document.getElementById('categoryList');
       if (!container) return;
       
       container.innerHTML = categories.map(cat => `
-        <div class="category-item px-3 py-1.5 rounded-md cursor-pointer hover:bg-bg-tertiary" data-category="${cat}">
-          <div class="flex justify-between items-center">
-            <span class="text-sm">${getCategoryIcon(cat)} ${cat}</span>
-            <span class="text-xs text-text-tertiary">${userFeeds.filter(f => f.category === cat).length}</span>
-          </div>
-        </div>
+        <button class="category-item flex justify-between items-center w-full px-3 py-1.5 rounded-md text-left hover:bg-bg-tertiary transition-colors text-sm"
+                data-category="${cat}" role="listitem">
+          <span>${getCategoryIcon(cat)} ${cat}</span>
+          <span class="text-xs text-text-tertiary">${userFeeds.filter(f => f.category === cat).length}</span>
+        </button>
       `).join('');
       
       document.querySelectorAll('.category-item').forEach(el => {
@@ -447,6 +744,7 @@
           currentCategory = el.dataset.category;
           currentFilter = null;
           document.getElementById('feedTitle').textContent = currentCategory;
+          announce(`Filtering by category: ${currentCategory}`);
           renderFeed();
         });
       });
@@ -457,9 +755,10 @@
       if (!container) return;
       
       container.innerHTML = userFeeds.map(feed => `
-        <div class="feed-item flex justify-between items-center px-3 py-1.5 rounded-md text-sm group">
+        <div class="feed-item flex justify-between items-center px-3 py-1.5 rounded-md text-sm group" role="listitem">
           <span class="truncate flex-1">${feed.icon} ${feed.title}</span>
-          <button class="remove-feed text-text-tertiary hover:text-error opacity-0 group-hover:opacity-100 transition-opacity" data-id="${feed.id}">✕</button>
+          <button class="remove-feed text-text-tertiary hover:text-error opacity-0 group-hover:opacity-100 transition-opacity"
+                  data-id="${feed.id}" aria-label="Remove feed: ${feed.title}">✕</button>
         </div>
       `).join('');
       
@@ -467,8 +766,10 @@
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
           const id = btn.dataset.id;
+          const feedTitle = userFeeds.find(f => f.id === id)?.title;
           userFeeds = userFeeds.filter(f => f.id !== id);
           saveFeeds();
+          announce(`Removed feed: ${feedTitle}`);
           loadAllFeeds();
         });
       });
@@ -519,38 +820,53 @@
       if (filtered.length === 0) {
         container.innerHTML = `
           <div class="max-w-feed mx-auto text-center py-12">
-            <div class="text-4xl mb-3">📭</div>
-            <h3 class="text-lg font-semibold mb-2">No articles found</h3>
-            <p class="text-text-secondary text-sm">Try importing more feeds or check back later</p>
+            <div class="text-4xl mb-3" aria-hidden="true">📭</div>
+            <h2 class="text-lg font-semibold mb-2">No articles found</h2>
+            <p class="text-sm text-text-secondary">Try importing more feeds or check back later</p>
           </div>
         `;
         return;
       }
       
       container.innerHTML = `
-        <div class="max-w-feed mx-auto space-y-6">
+        <div class="max-w-feed mx-auto space-y-4">
           ${filtered.map(article => `
-            <article class="article-item relative pl-4 cursor-pointer group" data-id="${article.id}">
-              <div class="absolute left-0 top-2 w-2 h-2 rounded-full ${article.read ? 'bg-gray-300' : 'bg-accent'}"></div>
-              <div class="flex items-center gap-2 text-xs text-text-tertiary mb-1">
-                <span class="font-medium text-text-secondary">${article.sourceIcon} ${article.source}</span>
-                <span>•</span>
-                <span>${formatTimeAgo(article.timestamp)}</span>
-                <button class="save-btn ml-auto text-text-tertiary hover:text-accent" data-id="${article.id}">${article.saved ? '🔖' : '🏷️'}</button>
+            <article class="article-item relative cursor-pointer group transition-colors" 
+                     data-id="${article.id}" 
+                     role="article" 
+                     aria-label="${article.read ? 'Read' : 'Unread'}: ${article.title} from ${article.source}">
+              <div class="absolute left-0 top-2 w-2 h-2 rounded-full ${article.read ? 'bg-bg-tertiary' : 'bg-unread-indicator'}" 
+                   aria-hidden="true"></div>
+              <div class="sr-only">${article.read ? 'Read' : 'Unread'}</div>
+              
+              <div class="flex items-center gap-2 text-xs text-text-tertiary mb-1 ml-3">
+                <span class="font-medium text-text-secondary" aria-hidden="true">${article.sourceIcon} ${article.source}</span>
+                <span aria-hidden="true">•</span>
+                <time datetime="${new Date(article.timestamp).toISOString()}">${formatTimeAgo(article.timestamp)}</time>
+                <button class="save-btn ml-auto text-text-tertiary hover:text-accent transition-colors"
+                        data-id="${article.id}"
+                        aria-label="${article.saved ? 'Remove from saved' : 'Save article'}">
+                  ${article.saved ? '🔖' : '🏷️'}
+                </button>
               </div>
-              <h2 class="text-base font-semibold text-text-primary mb-1 group-hover:text-accent">
+              
+              <h2 class="text-lg font-semibold text-text-primary mb-1 group-hover:text-accent transition-colors ml-3 tracking-tight">
                 ${article.title}
               </h2>
-              <p class="text-sm text-text-secondary line-clamp-2">${article.content.replace(/<[^>]*>/g, '')}</p>
-              <div class="mt-2">
-                <span class="text-xs px-2 py-0.5 rounded ${getCategoryColor(article.category)}">${article.category}</span>
+              
+              <p class="text-sm text-text-secondary line-clamp-2 ml-3">${article.content.replace(/<[^>]*>/g, '')}</p>
+              
+              <div class="mt-2 ml-3">
+                <span class="text-xs px-2 py-0.5 rounded ${getCategoryColor(article.category)} font-medium"
+                      aria-label="Category: ${article.category}">
+                  ${article.category}
+                </span>
               </div>
             </article>
           `).join('')}
         </div>
       `;
       
-      // Event listeners
       document.querySelectorAll('.article-item').forEach(el => {
         el.addEventListener('click', (e) => {
           if (e.target.classList.contains('save-btn')) return;
@@ -560,6 +876,7 @@
             const article = allArticles.find(a => a.id === id);
             if (article) article.read = true;
             saveArticles();
+            announce(`Marked as read: ${article?.title}`);
             renderFeed();
           }
         });
@@ -569,14 +886,15 @@
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
           const id = btn.dataset.id;
+          const article = allArticles.find(a => a.id === id);
           if (savedArticles.has(id)) {
             savedArticles.delete(id);
-            const article = allArticles.find(a => a.id === id);
             if (article) article.saved = false;
+            announce(`Removed from saved: ${article?.title}`);
           } else {
             savedArticles.add(id);
-            const article = allArticles.find(a => a.id === id);
             if (article) article.saved = true;
+            announce(`Saved: ${article?.title}`);
           }
           saveArticles();
           renderFeed();
@@ -586,13 +904,13 @@
     
     function getCategoryColor(category) {
       const colors = {
-        'Frontend': 'bg-blue-100 text-blue-700',
-        'Design': 'bg-pink-100 text-pink-700',
-        'Backend & DevOps': 'bg-green-100 text-green-700',
-        'General Tech': 'bg-yellow-100 text-yellow-700',
-        'AI & ML': 'bg-purple-100 text-purple-700'
+        'Frontend': 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
+        'Design': 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300',
+        'Backend & DevOps': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',
+        'General Tech': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300',
+        'AI & ML': 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300'
       };
-      return colors[category] || 'bg-gray-100 text-gray-700';
+      return colors[category] || 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300';
     }
     
     function formatTimeAgo(timestamp) {
@@ -606,43 +924,30 @@
       return `${days}d ago`;
     }
     
-    // OPML Import handler
     async function importOPML(content) {
       const feeds = parseOPML(content);
       const validFeeds = feeds.filter(f => !f.isDead);
       const deadFeeds = feeds.filter(f => f.isDead);
       
-      // Dodaj nove feedove (bez duplikata)
       const existingUrls = new Set(userFeeds.map(f => f.feedUrl));
       const newFeeds = validFeeds.filter(f => !existingUrls.has(f.feedUrl));
       
       userFeeds = [...userFeeds, ...newFeeds];
       saveFeeds();
       
-      // Prikaži rezultat
-      alert(`Imported ${newFeeds.length} feeds.\n${deadFeeds.length} dead feeds skipped.\n${validFeeds.length - newFeeds.length} duplicates ignored.`);
+      const message = `Imported ${newFeeds.length} feeds. ${deadFeeds.length} dead feeds skipped. ${validFeeds.length - newFeeds.length} duplicates ignored.`;
+      announce(message, true);
+      alert(message);
       
-      if (newFeeds.length > 0) {
-        await loadAllFeeds();
-      }
-      
-      return { imported: newFeeds.length, dead: deadFeeds.length, duplicates: validFeeds.length - newFeeds.length };
+      if (newFeeds.length > 0) await loadAllFeeds();
     }
     
-    // Export OPML
     function exportOPML() {
-      let opml = `<?xml version="1.0" encoding="UTF-8"?>
-<opml version="2.0">
-  <head>
-    <title>Frontpage Export</title>
-    <dateCreated>${new Date().toISOString()}</dateCreated>
-  </head>
-  <body>
-`;
+      let opml = `<?xml version="1.0" encoding="UTF-8"?>\n<opml version="2.0">\n  <head>\n    <title>Frontpage Export</title>\n    <dateCreated>${new Date().toISOString()}</dateCreated>\n  </head>\n  <body>\n`;
       
       const categories = [...new Set(userFeeds.map(f => f.category))];
       categories.forEach(cat => {
-        opml += `    <outline text="${cat}" title="${cat}">\n`;
+        opml += `    <outline text="${escapeXml(cat)}" title="${escapeXml(cat)}">\n`;
         const feedsInCat = userFeeds.filter(f => f.category === cat);
         feedsInCat.forEach(feed => {
           opml += `      <outline type="rss" text="${escapeXml(feed.title)}" title="${escapeXml(feed.title)}" xmlUrl="${feed.feedUrl}" htmlUrl="${feed.siteUrl || ''}"/>\n`;
@@ -659,29 +964,29 @@
       a.download = 'frontpage-export.opml';
       a.click();
       URL.revokeObjectURL(url);
+      
+      announce(`Exported ${userFeeds.length} feeds to OPML file`);
     }
     
     function escapeXml(str) {
-      return str.replace(/[<>&]/g, function(m) {
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        if (m === '&') return '&amp;';
-        return m;
-      });
+      return str.replace(/[<>&]/g, m => m === '<' ? '&lt;' : m === '>' ? '&gt;' : '&amp;');
     }
     
     // Event listeners
     document.getElementById('searchInput')?.addEventListener('input', (e) => {
       searchQuery = e.target.value;
+      if (searchQuery) announce(`Searching for: ${searchQuery}`);
       renderFeed();
     });
     
     document.getElementById('markAllRead')?.addEventListener('click', () => {
+      const count = allArticles.filter(a => !a.read).length;
       allArticles.forEach(article => {
         readArticles.add(article.id);
         article.read = true;
       });
       saveArticles();
+      announce(`Marked all ${count} articles as read`);
       renderFeed();
     });
     
@@ -689,6 +994,7 @@
       currentFilter = 'all';
       currentCategory = null;
       document.getElementById('feedTitle').textContent = 'All Items';
+      announce('Showing all articles');
       renderFeed();
     });
     
@@ -696,10 +1002,24 @@
       currentFilter = 'saved';
       currentCategory = null;
       document.getElementById('feedTitle').textContent = 'Saved Items';
+      announce('Showing saved articles only');
       renderFeed();
     });
     
-    // OPML Modal
+    document.addEventListener('keydown', (e) => {
+      if (e.key === '/' && document.activeElement !== document.getElementById('searchInput')) {
+        e.preventDefault();
+        document.getElementById('searchInput')?.focus();
+        announce('Search input focused. Type your search query.');
+      }
+      if (e.key === 'Escape' && document.activeElement === document.getElementById('searchInput')) {
+        document.getElementById('searchInput').value = '';
+        searchQuery = '';
+        renderFeed();
+        announce('Search cleared');
+      }
+    });
+    
     const modal = document.getElementById('opmlModal');
     const importBtn = document.getElementById('importOpmlBtn');
     const exportBtn = document.getElementById('exportOpmlBtn');
@@ -708,16 +1028,25 @@
     const fileInput = document.getElementById('opmlFile');
     const textarea = document.getElementById('opmlContent');
     
-    importBtn?.addEventListener('click', () => modal.classList.add('active'));
+    importBtn?.addEventListener('click', () => {
+      modal.style.display = 'flex';
+      announce('Import OPML dialog opened');
+    });
+    
     exportBtn?.addEventListener('click', exportOPML);
-    closeModal?.addEventListener('click', () => modal.classList.remove('active'));
+    closeModal?.addEventListener('click', () => {
+      modal.style.display = 'none';
+      announce('Import dialog closed');
+    });
     
     fileInput?.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (file) {
+        announce(`Selected file: ${file.name}`);
         const reader = new FileReader();
         reader.onload = (event) => {
           textarea.value = event.target.result;
+          announce(`Loaded ${file.name} - ready to import`);
         };
         reader.readAsText(file);
       }
@@ -727,19 +1056,21 @@
       const content = textarea.value;
       if (content.trim()) {
         await importOPML(content);
-        modal.classList.remove('active');
+        modal.style.display = 'none';
         textarea.value = '';
-        fileInput.value = '';
+        if (fileInput) fileInput.value = '';
       } else {
-        alert('Please provide OPML content or upload a file');
+        announce('Please provide OPML content or upload a file', true);
       }
     });
     
-    document.getElementById('importEmptyBtn')?.addEventListener('click', () => {
-      modal.classList.add('active');
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal?.style.display === 'flex') {
+        modal.style.display = 'none';
+        announce('Import dialog closed');
+      }
     });
     
-    // Pokreni app
     loadState();
     renderCategories();
     renderFeedList();
@@ -749,19 +1080,26 @@
     } else {
       document.getElementById('feedStream').innerHTML = `
         <div class="max-w-feed mx-auto text-center py-12">
-          <div class="text-4xl mb-3">📭</div>
-          <h3 class="text-lg font-semibold mb-2">No feeds yet</h3>
-          <p class="text-text-secondary text-sm mb-4">Import OPML file to get started</p>
-          <button id="importEmptyBtn2" class="px-4 py-2 bg-accent text-white rounded-md hover:bg-accent/90">📁 Import OPML</button>
+          <div class="text-4xl mb-3" aria-hidden="true">📭</div>
+          <h2 class="text-lg font-semibold mb-2">No feeds yet</h2>
+          <p class="text-sm text-text-secondary mb-4">Import OPML file to get started</p>
+          <button id="importEmptyBtn" class="px-4 py-2 bg-accent text-white rounded-md hover:bg-accent-hover transition-colors font-medium"
+                  aria-label="Import OPML file to add feeds">
+            📁 Import OPML
+          </button>
         </div>
       `;
-      document.getElementById('importEmptyBtn2')?.addEventListener('click', () => modal.classList.add('active'));
+      document.getElementById('importEmptyBtn')?.addEventListener('click', () => {
+        modal.style.display = 'flex';
+        announce('Import OPML dialog opened');
+      });
     }
   </script>
 </body>
 </html>
+
  
-  
+ 
 
 
   
