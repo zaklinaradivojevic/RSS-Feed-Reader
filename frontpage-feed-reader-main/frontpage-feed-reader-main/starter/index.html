@@ -33,6 +33,18 @@
       --color-unread-indicator: #2563EB;
       --color-focus-ring: #2563EB;
       
+      /* Category badge colors (light) */
+      --category-frontend-bg: #EFF6FF;
+      --category-frontend-text: #1D4ED8;
+      --category-design-bg: #FCE7F3;
+      --category-design-text: #BE185D;
+      --category-backend-bg: #DCFCE7;
+      --category-backend-text: #166534;
+      --category-tech-bg: #FEF3C7;
+      --category-tech-text: #92400E;
+      --category-ai-bg: #F3E8FF;
+      --category-ai-text: #6B21A8;
+      
       /* Typography */
       --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
       --font-serif: Georgia, Charter, serif;
@@ -113,6 +125,18 @@
         --color-unread-indicator: #58A6FF;
         --color-focus-ring: #58A6FF;
         
+        /* Category badge colors (dark) */
+        --category-frontend-bg: #1A2332;
+        --category-frontend-text: #58A6FF;
+        --category-design-bg: #2D1A2B;
+        --category-design-text: #F78C9C;
+        --category-backend-bg: #0D2E1A;
+        --category-backend-text: #7EE08A;
+        --category-tech-bg: #2E2A1A;
+        --category-tech-text: #F5C542;
+        --category-ai-bg: #2A1A3A;
+        --category-ai-text: #C084FC;
+        
         /* Dark Mode Shadows */
         --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
         --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -2px rgba(0,0,0,0.3);
@@ -188,6 +212,26 @@
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
+    
+    /* Fix #1: unread indicator background */
+    .bg-unread-indicator { background: var(--color-unread-indicator); }
+    
+    /* Fix #3: pulse animation */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    
+    /* Fix #6: error hover color */
+    .hover\:text-error:hover { color: var(--color-error); }
+    
+    /* Category badge styles using CSS variables */
+    .category-frontend { background: var(--category-frontend-bg); color: var(--category-frontend-text); }
+    .category-design { background: var(--category-design-bg); color: var(--category-design-text); }
+    .category-backend { background: var(--category-backend-bg); color: var(--category-backend-text); }
+    .category-general-tech { background: var(--category-tech-bg); color: var(--category-tech-text); }
+    .category-ai-ml { background: var(--category-ai-bg); color: var(--category-ai-text); }
     
     /* Layout utilities */
     .sidebar-width { width: var(--sidebar-width); }
@@ -309,7 +353,7 @@
       background: var(--color-bg-tertiary);
     }
     
-    /* Modal overlay */
+    /* Modal overlay (improved) */
     .modal {
       display: none;
       position: fixed;
@@ -445,7 +489,7 @@
     </main>
   </div>
 
-  <!-- OPML MODAL -->
+  <!-- OPML MODAL (no inline styles) -->
   <div id="opmlModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-overlay" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;">
       <div class="modal-content p-6" role="document">
@@ -503,7 +547,7 @@
       }
     }
     
-    // Default feeds
+    // Default feeds (IDs as strings)
     const DEFAULT_FEEDS = [
       { id: '1', title: 'CSS-Tricks', feedUrl: 'https://css-tricks.com/feed/', category: 'Frontend', icon: '🎨' },
       { id: '2', title: 'Smashing Magazine', feedUrl: 'https://www.smashingmagazine.com/feed/', category: 'Frontend', icon: '🔥' },
@@ -570,7 +614,8 @@
           const entries = doc.querySelectorAll('entry');
           entries.forEach((entry, idx) => {
             const title = entry.querySelector('title')?.textContent || 'No title';
-            const linkEl = entry.querySelector('link');
+            // Fix #5: prefer alternate link
+            const linkEl = entry.querySelector('link[rel="alternate"]') || entry.querySelector('link');
             const link = linkEl?.getAttribute('href') || '#';
             const summary = entry.querySelector('summary')?.textContent || '';
             const content = entry.querySelector('content')?.textContent || summary;
@@ -666,7 +711,9 @@
       announce(`Loaded ${allArticles.length} total articles from ${userFeeds.length} feeds`);
     }
     
+    // Fix #8: null/undefined safety
     function decodeHTMLEntities(text) {
+      if (!text) return '';
       const textarea = document.createElement('textarea');
       textarea.innerHTML = text;
       return textarea.value;
@@ -689,7 +736,8 @@
             const isDeadFeed = xmlUrl.includes('example.com') || xmlUrl.includes('this-feed-does-not-exist');
             
             feeds.push({
-              id: Date.now() + Math.random(),
+              // Fix #2: use UUID string
+              id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()),
               title: title || (isDeadFeed ? 'Dead Feed' : 'Untitled Feed'),
               feedUrl: xmlUrl,
               siteUrl: outline.getAttribute('htmlUrl') || outline.getAttribute('htmlurl') || '',
@@ -808,6 +856,18 @@
       return filtered;
     }
     
+    // Fix #9: use category-specific CSS classes
+    function getCategoryClass(category) {
+      const map = {
+        'Frontend': 'category-frontend',
+        'Design': 'category-design',
+        'Backend & DevOps': 'category-backend',
+        'General Tech': 'category-general-tech',
+        'AI & ML': 'category-ai-ml'
+      };
+      return map[category] || 'category-frontend'; // fallback
+    }
+    
     function renderFeed() {
       const filtered = getFilteredArticles();
       const container = document.getElementById('feedStream');
@@ -857,7 +917,7 @@
               <p class="text-sm text-text-secondary line-clamp-2 ml-3">${article.content.replace(/<[^>]*>/g, '')}</p>
               
               <div class="mt-2 ml-3">
-                <span class="text-xs px-2 py-0.5 rounded ${getCategoryColor(article.category)} font-medium"
+                <span class="text-xs px-2 py-0.5 rounded font-medium ${getCategoryClass(article.category)}"
                       aria-label="Category: ${article.category}">
                   ${article.category}
                 </span>
@@ -902,17 +962,6 @@
       });
     }
     
-    function getCategoryColor(category) {
-      const colors = {
-        'Frontend': 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
-        'Design': 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300',
-        'Backend & DevOps': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',
-        'General Tech': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300',
-        'AI & ML': 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300'
-      };
-      return colors[category] || 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300';
-    }
-    
     function formatTimeAgo(timestamp) {
       const seconds = Math.floor((Date.now() - timestamp) / 1000);
       if (seconds < 60) return `${seconds}s ago`;
@@ -932,6 +981,11 @@
       const existingUrls = new Set(userFeeds.map(f => f.feedUrl));
       const newFeeds = validFeeds.filter(f => !existingUrls.has(f.feedUrl));
       
+      if (newFeeds.length === 0) {
+        announce('No new feeds to import (all duplicates or dead)', true);
+        return;
+      }
+      
       userFeeds = [...userFeeds, ...newFeeds];
       saveFeeds();
       
@@ -939,7 +993,7 @@
       announce(message, true);
       alert(message);
       
-      if (newFeeds.length > 0) await loadAllFeeds();
+      await loadAllFeeds();
     }
     
     function exportOPML() {
@@ -1098,8 +1152,8 @@
 </body>
 </html>
 
- 
- 
+
+     
 
 
   
